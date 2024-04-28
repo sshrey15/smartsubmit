@@ -1,12 +1,15 @@
 "use client"
 import { useState } from 'react';
+import Loading from '../loading'; // Import your loading component
 
 export default function Home() {
   const [message, setMessage] = useState('');
   const [drawerOpen, setDrawerOpen] = useState(true);
+  const [loading, setLoading] = useState(false); // Add a loading state
 
   const handleSubmit = async (event: any) => {
     event.preventDefault();
+    setLoading(true); // Set loading to true when the upload starts
     const formData = new FormData(event.target);
     const response = await fetch('/api/upload', {
       method: 'POST',
@@ -14,6 +17,7 @@ export default function Home() {
     });
     const data = await response.json();
     setMessage(data.docs.info);
+    setLoading(false); // Set loading to false when the upload finishes
   };
 
   return (
@@ -37,6 +41,9 @@ export default function Home() {
           upload
         </button>
       </form>
+      {loading && <Loading />} {
+        ''
+      }
       {message && <div className="mt-6 ml-20 p-4 w-3/4 bg-green-100 border-l-4 border-green-500 text-green-700 rounded shadow-md">{message}</div>}
     </main>
   );
